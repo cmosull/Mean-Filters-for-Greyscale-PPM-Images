@@ -6,6 +6,7 @@
 int main (int argc, char *argv[]) {
     FILE *fpt;
     unsigned char *img, *smooth;
+    int *smoothtemp;
     char header[320];
     int rows,cols,bytes;
     int a,r,c,r2,c2,sum,temp;
@@ -36,6 +37,7 @@ int main (int argc, char *argv[]) {
 
 	//Memory allocation for new image
     smooth=(unsigned char *)malloc((rows*cols)*sizeof(unsigned char));
+    smoothtemp=(int *)malloc((rows*cols)*sizeof(int));
 
     totaltemp = 0;
     totaltime = 0;
@@ -50,26 +52,26 @@ int main (int argc, char *argv[]) {
         clock_gettime(CLOCK_REALTIME,&start);
         printf("Start time: %ld sec %ld ns\n",(long int)start.tv_sec,start.tv_nsec);
 
-        //Row
-	    for (r=3; r<(rows-3); r++) {
-            for (c=0; c<cols; c++) {
-                sum=0;
-                temp=0;
-                for (r2=-3; r2<=3; r2++) {
-                    temp=img[(c+c2)*rows+r+r2];
-                    sum=sum+temp;
-                }
-                smooth[(r*rows)+c]=sum/7;
-            }
-        }  
-
         //Column
-        for (r=0; r<rows; r++) {
+	    for (r=0; r<rows; r++) {
             for (c=3; c<(cols-3); c++) {
                 sum=0;
                 temp=0;
                 for (c2=-3; c2<=3; c2++) {
-                    temp=img[(r+r2)*cols+c+c2];
+                    temp=img[(r*cols)+c+c2];
+                    sum=sum+temp;
+                }
+                smoothtemp[(r*rows)+c]=sum/7;
+            }
+        }  
+
+        //Row
+        for (r=3; r<(rows-3); r++) {
+            for (c=0; c<cols; c++) {
+                sum=0;
+                temp=0;
+                for (r2=-3; r2<=3; r2++) {
+                    temp=smoothtemp[((r+r2)*cols)+c];
                     sum=sum+temp;
                 }
                 smooth[(r*rows)+c]=sum/7;
@@ -98,10 +100,11 @@ int main (int argc, char *argv[]) {
     printf("Average time in seconds: %lf sec\n\n",(avgtime * 0.000000001));
 
 	//Write out the image to new file
-    fpt=fopen("smoothed2.ppm","w");
+    fpt=fopen("smoothed_sepfilters.ppm","w");
     fprintf(fpt,"P5 %d %d 255\n",cols,rows);
     fwrite(smooth,cols*rows,1,fpt);
     fclose(fpt);
     free(img);
     free(smooth);
+    free(smoothtemp);
 }
