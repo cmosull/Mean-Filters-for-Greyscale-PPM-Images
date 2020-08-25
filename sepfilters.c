@@ -98,9 +98,10 @@ int main (int argc, char *argv[]) {
     avgtime=(totaltime/10);
     printf("Average time in ns: %ld ns\n", avgtime);
     printf("Average time in seconds: %lf sec\n\n",(avgtime * 0.000000001));
+    printf("\n\n====================================================================\n\n");
 
 	//Write out the image to new file
-    fpt=fopen("smoothed_sepfilters.ppm","w");
+    fpt=fopen("smoothed_sepfilters.ppm","wb");
     fprintf(fpt,"P5 %d %d 255\n",cols,rows);
     fwrite(smooth,cols*rows,1,fpt);
     fclose(fpt);
