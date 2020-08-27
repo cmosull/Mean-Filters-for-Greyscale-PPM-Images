@@ -30,14 +30,14 @@ int main (int argc, char *argv[]) {
     }
 
     //Allocate space for image data
-    img=(unsigned char *)malloc((rows*cols)*sizeof(unsigned char));
+    img=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
     header[0]=fgetc(fpt);
     fread(img,1,cols*rows,fpt);
     fclose(fpt);
 
 	//Memory allocation for new image
-    smooth=(unsigned char *)malloc((rows*cols)*sizeof(unsigned char));
-    smoothtemp=(int *)malloc((rows*cols)*sizeof(int));
+    smooth=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
+    smoothtemp=(int *)calloc((rows*cols),sizeof(int));
 
     totaltemp = 0;
     totaltime = 0;
@@ -57,30 +57,21 @@ int main (int argc, char *argv[]) {
             for (c=3; c<(cols-3); c++) {
                 sum=0;
                 temp=0;
-                temp2=0;
-                if (c==3) {
-                    for (c2=-3; c2<=3; c2++) {
+                for (c2=-3; c2<=3; c2++) {
                     temp=img[(r*cols)+c+c2];
                     sum=sum+temp;
-                    }
                 }
-                else {
-                    temp=img[(r*cols)+c-4];
-                    sum=sum-temp;
-                    temp2=img[(r*cols)+c+3];
-                    sum=sum+temp2;
-                }
-                smoothtemp[(r*rows)+c]=sum;
+                smoothtemp[(r*cols)+c]=sum;
             }
         }  
 
         //Row
-        for (r=3; r<(rows-3); r++) {
-            for (c=3; c<(cols-3); c++) {
-                sum=0;
-                temp=0;
-                temp2=0;
+        for (c=3; c<(cols-3); c++) {
+            for (r=3; r<(rows-3); r++) {
                 if (r==3) {
+                    sum=0;
+                    temp=0;
+                    temp2=0;
                     for (r2=-3; r2<=3; r2++) {
                         temp=smoothtemp[((r+r2)*cols)+c];
                         sum=sum+temp;
@@ -88,11 +79,10 @@ int main (int argc, char *argv[]) {
                 }
                 else {
                     temp=smoothtemp[((r-4)*cols)+c];
-                    sum=sum-temp;
                     temp2=smoothtemp[((r+3)*cols)+c];
-                    sum=sum-temp2;
+                    sum=sum-temp+temp2;
                 }
-                smooth[(r*rows)+c]=sum/49;
+                smooth[(r*cols)+c]=sum/49;
             }
         } 
 
@@ -126,4 +116,6 @@ int main (int argc, char *argv[]) {
     free(img);
     free(smooth);
     free(smoothtemp);
+
+    return 0;
 }
