@@ -29,13 +29,13 @@ int main (int argc, char *argv[]) {
     }
 
     //Allocate space for image data
-    img=(unsigned char *)malloc((rows*cols)*sizeof(unsigned char));
+    img=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
     header[0]=fgetc(fpt);
     fread(img,1,cols*rows,fpt);
     fclose(fpt);
 
 	//Memory allocation for new image
-    smooth=(unsigned char *)malloc((rows*cols)*sizeof(unsigned char));
+    smooth=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
 
     totaltemp = 0;
     totaltime = 0;
@@ -88,7 +88,7 @@ int main (int argc, char *argv[]) {
     printf("\n\n====================================================================\n\n");
 
 	//Write out the image to new file
-    fpt=fopen("smoothed_2dconv.ppm","wb");
+    fpt=fopen("smoothed_2dconv.ppm","w");
     fprintf(fpt,"P5 %d %d 255\n",cols,rows);
     fwrite(smooth,cols*rows,1,fpt);
     fclose(fpt);

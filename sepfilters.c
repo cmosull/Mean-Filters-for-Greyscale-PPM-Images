@@ -30,14 +30,14 @@ int main (int argc, char *argv[]) {
     }
 
     //Allocate space for image data
-    img=(unsigned char *)malloc((rows*cols)*sizeof(unsigned char));
+    img=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
     header[0]=fgetc(fpt);
     fread(img,1,cols*rows,fpt);
     fclose(fpt);
 
 	//Memory allocation for new image
-    smooth=(unsigned char *)malloc((rows*cols)*sizeof(unsigned char));
-    smoothtemp=(int *)malloc((rows*cols)*sizeof(int));
+    smooth=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
+    smoothtemp=(int *)calloc((rows*cols),sizeof(int));
 
     totaltemp = 0;
     totaltime = 0;
@@ -61,20 +61,20 @@ int main (int argc, char *argv[]) {
                     temp=img[(r*cols)+c+c2];
                     sum=sum+temp;
                 }
-                smoothtemp[(r*rows)+c]=sum/7;
+                smoothtemp[(r*rows)+c]=sum;
             }
         }  
 
         //Row
         for (r=3; r<(rows-3); r++) {
-            for (c=0; c<cols; c++) {
+            for (c=3; c<(cols-3); c++) {
                 sum=0;
                 temp=0;
                 for (r2=-3; r2<=3; r2++) {
                     temp=smoothtemp[((r+r2)*cols)+c];
                     sum=sum+temp;
                 }
-                smooth[(r*rows)+c]=sum/7;
+                smooth[(r*rows)+c]=sum/49;
             }
         } 
 
@@ -101,7 +101,7 @@ int main (int argc, char *argv[]) {
     printf("\n\n====================================================================\n\n");
 
 	//Write out the image to new file
-    fpt=fopen("smoothed_sepfilters.ppm","wb");
+    fpt=fopen("smoothed_sepfilters.ppm","w");
     fprintf(fpt,"P5 %d %d 255\n",cols,rows);
     fwrite(smooth,cols*rows,1,fpt);
     fclose(fpt);

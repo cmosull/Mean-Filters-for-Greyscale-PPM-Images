@@ -9,7 +9,7 @@ int main (int argc, char *argv[]) {
     int *smoothtemp;
     char header[320];
     int rows,cols,bytes;
-    int a,r,c,r2,c2,sum,temp;
+    int a,r,c,r2,c2,sum,temp,temp2;
     long int totaltime,totaltemp,avgtime;
     struct timespec	start,end;
 
@@ -57,24 +57,42 @@ int main (int argc, char *argv[]) {
             for (c=3; c<(cols-3); c++) {
                 sum=0;
                 temp=0;
-                for (c2=-3; c2<=3; c2++) {
+                temp2=0;
+                if (c==3) {
+                    for (c2=-3; c2<=3; c2++) {
                     temp=img[(r*cols)+c+c2];
                     sum=sum+temp;
+                    }
                 }
-                smoothtemp[(r*rows)+c]=sum/7;
+                else {
+                    temp=img[(r*cols)+c-4];
+                    sum=sum-temp;
+                    temp2=img[(r*cols)+c+3];
+                    sum=sum+temp2;
+                }
+                smoothtemp[(r*rows)+c]=sum;
             }
         }  
 
         //Row
         for (r=3; r<(rows-3); r++) {
-            for (c=0; c<cols; c++) {
+            for (c=3; c<(cols-3); c++) {
                 sum=0;
                 temp=0;
-                for (r2=-3; r2<=3; r2++) {
-                    temp=smoothtemp[((r+r2)*cols)+c];
-                    sum=sum+temp;
+                temp2=0;
+                if (r==3) {
+                    for (r2=-3; r2<=3; r2++) {
+                        temp=smoothtemp[((r+r2)*cols)+c];
+                        sum=sum+temp;
+                    }
                 }
-                smooth[(r*rows)+c]=sum/7;
+                else {
+                    temp=smoothtemp[((r-4)*cols)+c];
+                    sum=sum-temp;
+                    temp2=smoothtemp[((r+3)*cols)+c];
+                    sum=sum-temp2;
+                }
+                smooth[(r*rows)+c]=sum/49;
             }
         } 
 
@@ -107,4 +125,5 @@ int main (int argc, char *argv[]) {
     fclose(fpt);
     free(img);
     free(smooth);
+    free(smoothtemp);
 }
