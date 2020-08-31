@@ -70,6 +70,7 @@ int main (int argc, char *argv[]) {
         //Row
         for (c=3; c<(cols-3); c++) {
             for (r=3; r<(rows-3); r++) {
+                //Checks if this is the first time through
                 if (r==3) {
                     sum=0;
                     temp=0;
@@ -79,6 +80,7 @@ int main (int argc, char *argv[]) {
                         sum=sum+temp;
                     }
                 }
+                //If not, add the next row and subtract the last row
                 else {
                     temp=smoothtemp[((r-4)*cols)+c];
                     temp2=smoothtemp[((r+3)*cols)+c];
