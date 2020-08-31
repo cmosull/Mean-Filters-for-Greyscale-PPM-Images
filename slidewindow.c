@@ -102,7 +102,7 @@ int main (int argc, char *argv[]) {
             //If not, just calculate the value normally
             totaltemp=(long int)(end.tv_nsec-start.tv_nsec);
         }
-        
+            
         printf("Run time: %ld ns\n\n",totaltemp);
         totaltime=totaltime+totaltemp;
     }
