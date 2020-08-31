@@ -37,9 +37,12 @@ int main (int argc, char *argv[]) {
 	//Memory allocation for new image
     smooth=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
 
+    //Clear temporary variables
     totaltemp = 0;
     totaltime = 0;
+    
     printf("\n");
+    printf("2D Convolution\n\n");
 
     //Loop to run algorithm 10 times
     for (a=0; a<10; a++) {
@@ -70,12 +73,16 @@ int main (int argc, char *argv[]) {
         printf("End time: %ld sec %ld ns\n",(long int)end.tv_sec,end.tv_nsec);
 
 	    //Print the run time
+        //Checks if the end.tv_sec value as increased
         if ((end.tv_nsec-start.tv_nsec)<0) {
+            //If it has, current run time is calculated to prevent a negative value
             totaltemp=(long int)(1000000000+end.tv_nsec-start.tv_nsec);
         }   
         else {
+            //If not, just calculate the value normally
             totaltemp=(long int)(end.tv_nsec-start.tv_nsec);
         }
+        
         printf("Run time: %ld ns\n\n",totaltemp);
         totaltime=totaltime+totaltemp;
     }
@@ -83,6 +90,7 @@ int main (int argc, char *argv[]) {
     //Average time calculated
     avgtime = 0;
     avgtime=(totaltime/10);
+
     printf("Average time in ns: %ld ns\n", avgtime);
     printf("Average time in seconds: %lf sec\n\n",(avgtime * 0.000000001));
     printf("\n\n====================================================================\n\n");
@@ -92,6 +100,7 @@ int main (int argc, char *argv[]) {
     fprintf(fpt,"P5 %d %d 255\n",cols,rows);
     fwrite(smooth,cols*rows,1,fpt);
     fclose(fpt);
+
     free(img);
     free(smooth);
 }
