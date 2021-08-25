@@ -34,7 +34,7 @@ int main (int argc, char *argv[]) {
     smooth=(unsigned char *)calloc((rows*cols),sizeof(unsigned char));
 
     //Convolution algorithm
-	for (r=3; r<(rows-3); r++) {
+    for (r=3; r<(rows-3); r++) {
         for (c=3; c<(cols-3); c++) {
             sum=0;
             temp=0;
