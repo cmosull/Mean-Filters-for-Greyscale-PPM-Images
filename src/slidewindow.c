@@ -37,7 +37,7 @@ int main (int argc, char *argv[]) {
     smoothtemp=(int *)calloc((rows*cols),sizeof(int));
 
     //Column
-	for (r=0; r<rows; r++) {
+    for (r=0; r<rows; r++) {
         for (c=3; c<(cols-3); c++) {
             sum=0;
             temp=0;
